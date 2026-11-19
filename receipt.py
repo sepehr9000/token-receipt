@@ -252,6 +252,10 @@ def day(when):
     return "%s %d, %d" % (local.strftime("%b"), local.day, local.year)
 
 
+def count_files(files):
+    return "1 transcript file" if len(files) == 1 else "%s transcript files" % format(len(files), ",")
+
+
 def tilde(path):
     home = os.path.expanduser("~")
     return "~" + path[len(home):] if path.startswith(home) else path
@@ -295,7 +299,7 @@ def main():
     days = ("%d days" % args.days if args.days != 1 else "day") if args.days else ""
     window = "in the last " + days if args.days else "in these transcripts"
     if receipt.requests == 0:
-        print("Read %s transcript files but found no Claude Code requests %s." % (format(len(files), ","), window))
+        print("Read %s but found no Claude Code requests %s." % (count_files(files), window))
         if receipt.unpriced:
             print("Skipped requests to models this script has no price for: %s" % ", ".join(sorted(receipt.unpriced)))
         if args.days:
@@ -336,7 +340,7 @@ def main():
             "%s (%s request%s)" % (k, format(v, ","), "" if v == 1 else "s")
             for k, v in sorted(receipt.unpriced.items())))
     print("Prices from %s, checked %s." % (PRICES_SOURCE, PRICES_CHECKED))
-    print("Read %s transcript files on this machine. Sent nothing anywhere." % format(len(files), ","))
+    print("Read %s on this machine. Sent nothing anywhere." % count_files(files))
     print()
     return 0
 
